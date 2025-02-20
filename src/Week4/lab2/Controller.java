@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Controller {
     private List<Person> people = new ArrayList<>();
-    private View view = new View();
+     View view = new View();
 
     public void run() {
         Scanner sc = new Scanner(System.in);
@@ -23,7 +23,9 @@ public class Controller {
 
             switch (choice) {
                 case 1:
-                    manageTeachers();
+                    System.out.print("Number of teachers u want input: ");
+                    int no = sc.nextInt();
+                    manageTeachers(no);
                     break;
                 case 2:
                     manageStudents();
@@ -41,17 +43,19 @@ public class Controller {
         }
     }
 
-    private void manageTeachers() {
-        String ID = view.getStringInput("ID: ", "\\d{6}");
-        String fullname = view.getStringInput("Fullname: ", "[A-Za-z ]+");
-        String phoneNumber = view.getStringInput("Phone number: ", "\\d{12}");
-        int yearOfBirth = view.getIntInput("Year of birth: ", 1900, Calendar.getInstance().get(Calendar.YEAR) - 1);
-        String major = view.getStringInput("Major: ", ".{1,30}");
-        int yearInProfession = view.getIntInput("Year in the profession: ", 0, Calendar.getInstance().get(Calendar.YEAR) - yearOfBirth);
-        String contractType = view.getStringInput("Contract type (Long/Short): ", "(Long|Short)");
-        double salaryCoefficient = view.getDoubleInput("Salary coefficient: ", 0);
+    private void manageTeachers(int no) {
+        for(int i = 0 ;  i < no ; i++) {
+            String ID = view.getStringInput("ID: ", "\\d{6}");
+            String fullname = view.getStringInput("Fullname: ", "[A-Za-z ]+");
+            String phoneNumber = view.getStringInput("Phone number: ", "\\d{12}");
+            int yearOfBirth = view.getIntInput("Year of birth: ", 1900, Calendar.getInstance().get(Calendar.YEAR) - 1);
+            String major = view.getStringInput("Major: ", ".{1,30}");
+            int yearInProfession = view.getIntInput("Year in the profession: ", 0, Calendar.getInstance().get(Calendar.YEAR) - yearOfBirth);
+            String contractType = view.getStringInput("Contract type (Long/Short): ", "(Long|Short)");
+            double salaryCoefficient = view.getDoubleInput("Salary coefficient: ", 0);
 
-        people.add(new Teacher(ID, fullname, phoneNumber, yearOfBirth, major, yearInProfession, contractType, salaryCoefficient));
+            people.add(new Teacher(ID, fullname, phoneNumber, yearOfBirth, major, yearInProfession, contractType, salaryCoefficient));
+        }
     }
 
     private void manageStudents() {
