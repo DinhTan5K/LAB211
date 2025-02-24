@@ -1,7 +1,9 @@
 package test;
+import java.math.BigInteger;
 import java.util.Scanner;
 import Week5.lab1.CourseController;
 import Week5.lab2.ReservationController;
+import Week5.lab3.LargerNumber;
 
 public class TestWeek5 {
     public static void main(String[] args) {
@@ -48,6 +50,17 @@ public class TestWeek5 {
                 reservationController.start();
             }
             case 3 ->{
+
+
+                    System.out.print("Num1: ");
+                    String num1 = scanner.next();
+                    System.out.print("Num2: ");
+                    String num2 = scanner.next();
+
+                    LargerNumber largerNumber = new LargerNumber(num1, num2);
+                    largerNumber.addLarge();
+
+
 
             }
         }
