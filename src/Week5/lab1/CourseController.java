@@ -9,8 +9,9 @@ import java.util.Scanner;
 
 public class CourseController {
     private List<Course> courses = new ArrayList<>();
-    private CourseView view = new CourseView();
     private Scanner scanner = new Scanner(System.in);
+    CheckCondition checkCondition = new CheckCondition();
+    View view = new View();
 
     public void addCourse() {
         String type;
@@ -27,7 +28,10 @@ public class CourseController {
             System.out.print("Course ID: ");
             id = scanner.nextLine();
             boolean isDuplicate = false;
-
+            if(id.isEmpty()) {
+                System.out.println("Data input is invalid");
+                continue;
+            }
             for (Course c : courses) {
                 if (c.getCourseID().equalsIgnoreCase(id)) {
                     System.out.println("Data input is invalid, ID must be unique");
@@ -43,34 +47,44 @@ public class CourseController {
 
         System.out.print("Course Name: ");
         String name = scanner.nextLine();
+        int credits;
+        do{
+            System.out.print("Credits: ");
+            credits = Integer.parseInt(scanner.nextLine());
+            if (credits <= 0) {
+                System.out.println("Data input is invalid");
+            }
 
-        System.out.print("Credits: ");
-        int credits = Integer.parseInt(scanner.nextLine());
+        }while(credits <= 0);
+
 
         if (type.equals("O")) {
-            System.out.print("Platform: ");
-            String platform = scanner.nextLine();
+            String platform = checkCondition.checkEmpty("Platform: ","[A-Za-z0-9 ]+");
 
             System.out.print("Instructors: ");
             String instructors = scanner.nextLine();
 
-            System.out.print("Note: ");
-            String note = scanner.nextLine();
+            String note = checkCondition.checkEmpty("Note: ","[A-Za-z0-9 ]+");
 
             courses.add(new OnlineCourse(id, name, credits, platform, instructors, note));
 
         } else if (type.equals("F")) {
-            System.out.print("Begin date (yyyy-mm-dd): ");
-            LocalDate begin = LocalDate.parse(scanner.nextLine());
+            LocalDate begin , end;
 
-            System.out.print("End date (yyyy-mm-dd): ");
-            LocalDate end = LocalDate.parse(scanner.nextLine());
+                System.out.print("Begin date (dd/MM/yyyy): ");
+                begin = LocalDate.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-            if (end.isBefore(begin)) {
-                System.out.println("Data input is invalid, end must be after begin");
-                return;
+                System.out.print("End date (dd/MM/yyyy): ");
+                end = LocalDate.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                while (true) {
+                if (end.isBefore(begin)) {
+                    System.out.println("Data input is invalid, end must be after begin");
+                    System.out.print("End date (dd/MM/yyyy): ");
+                    end = LocalDate.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                } else {
+                    break;
+                }
             }
-
             System.out.print("Campus: ");
             String campus = scanner.nextLine();
 
@@ -82,10 +96,7 @@ public class CourseController {
     public void printAllCourses() {
 
         System.out.println("=========== ONLINE COURSES ===========");
-        System.out.println(String.format("\n| %-10s | %-30s | %-7s | %-15s | %-25s | %-15s |",
-                "Course ID", "Course Name", "Credits", "Platform", "Instructors", "Note") +
-                "\n|------------|--------------------------------|---------|-----------------|---------------------------|-----------------|");
-
+        view.formatOnline();
         for (Course course : courses) {
             if (course instanceof OnlineCourse) {
                 System.out.println(course);
@@ -94,10 +105,7 @@ public class CourseController {
 
 
         System.out.println("\n=========== OFFLINE COURSES ===========");
-        System.out.println(String.format("\n| %-10s | %-30s | %-7s | %-12s | %-12s | %-15s |",
-                "Course ID", "Course Name", "Credits", "Begin", "End", "Campus") +
-                "\n|------------|--------------------------------|---------|--------------|--------------|-----------------|");
-
+        view.formatOffline();
         for (Course course : courses) {
             if (course instanceof OfflineCourse) {
                 System.out.println(course);
@@ -108,9 +116,7 @@ public class CourseController {
 
     public void printOnlineCourses() {
         System.out.print("ONLINE COURSE");
-        System.out.println(String.format("\n| %-10s | %-30s | %-7s | %-15s | %-25s | %-15s |",
-                "Course ID", "Course Name", "Credits", "Platform", "Instructors", "Note") +
-                "\n|------------|--------------------------------|---------|-----------------|---------------------------|-----------------|");
+        view.formatOnline();
         for (Course course : courses) {
             if(course instanceof OnlineCourse) {
                 System.out.println(course);
@@ -120,9 +126,7 @@ public class CourseController {
 
     public void printOfflineCourses() {
         System.out.print("OFFLINE COURSE");
-        System.out.println(String.format("\n| %-10s | %-30s | %-7s | %-12s | %-12s | %-15s |",
-                "Course ID", "Course Name", "Credits", "Begin", "End", "Campus") +
-                "\n|------------|--------------------------------|---------|--------------|--------------|-----------------|");
+       view.formatOffline();
         for (Course course : courses) {
             if(course instanceof OfflineCourse) {
                 System.out.println(course);
@@ -137,6 +141,11 @@ public class CourseController {
 
         for (Course c : courses) {
             if (c.courseName.equalsIgnoreCase(name)) {
+                if (c instanceof OnlineCourse) {
+                    view.formatOnline();
+                } else if (c instanceof OfflineCourse) {
+                    view.formatOffline();
+                }
                 System.out.println(c);
                 found = true;
             }
@@ -148,10 +157,27 @@ public class CourseController {
     }
 
     public void deleteCourse() {
-        System.out.print("Enter Course ID to delete: ");
+        System.out.println("*** Delete course ***");
+        while (true) {
+        System.out.print("Course ID: ");
         String id = scanner.nextLine();
-        courses.removeIf(c -> c.getCourseID().equalsIgnoreCase(id));
-        System.out.println("Course deleted successfully!");
+        boolean found = false;
+        for(Course c : courses) {
+            if (c.getCourseID().equalsIgnoreCase(id)) {
+                courses.remove(c);
+                System.out.println("Course deleted successfully!");
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("No data found, do you want to find again? (Y/N):");
+            String choice = scanner.nextLine().trim().toUpperCase();
+            if (!choice.equals("Y")) {
+                return;
+            }
+        }
+    }
     }
 
     public void updateCourse() {
@@ -161,8 +187,7 @@ public class CourseController {
             System.out.print("Course ID: ");
             String id = scanner.nextLine().trim();
 
-
-           courseToUpdate = null;
+            courseToUpdate = null;
             for (Course c : courses) {
                 if (c.getCourseID().equalsIgnoreCase(id)) {
                     courseToUpdate = c;
@@ -170,19 +195,21 @@ public class CourseController {
                 }
             }
 
-            if (courseToUpdate == null) {
-                System.out.print("No data found, do you want to find again? (Y/N): ");
-                String choice = scanner.nextLine().trim().toUpperCase();
-                if (!choice.equals("Y")) {
-                    return;
-                }
-            } else {
+            if (courseToUpdate != null) {
                 break;
+            }
+
+            System.out.print("No data found, do you want to find again? (Y/N): ");
+            String choice = scanner.nextLine().trim().toUpperCase();
+            if (!choice.equals("Y")) {
+                return;
             }
         }
 
-
         System.out.println("*** Search results ***");
+        System.out.println(String.format("\n| %-10s | %-30s | %-7s | %-12s | %-12s | %-15s |",
+                "Course ID", "Course Name", "Credits", "Begin", "End", "Campus") +
+                "\n|------------|--------------------------------|---------|--------------|--------------|-----------------|");
         System.out.println(courseToUpdate);
 
         System.out.println("*** Updating ***");
@@ -202,8 +229,7 @@ public class CourseController {
         if (!newCredits.isEmpty()) courseToUpdate.setCredits(Integer.parseInt(newCredits));
 
 
-        if (courseToUpdate instanceof OnlineCourse) {
-            OnlineCourse online = (OnlineCourse) courseToUpdate;
+        if (courseToUpdate instanceof OnlineCourse online) {
 
             System.out.print("Platform: ");
             String newPlatform = scanner.nextLine().trim();
@@ -219,8 +245,7 @@ public class CourseController {
         }
 
 
-        if (courseToUpdate instanceof OfflineCourse) {
-            OfflineCourse offline = (OfflineCourse) courseToUpdate;
+        if (courseToUpdate instanceof OfflineCourse offline) {
             while (true) {
                 System.out.print("Begin (dd/MM/yyyy): ");
                 String newBegin = scanner.nextLine().trim();
