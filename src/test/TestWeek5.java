@@ -58,7 +58,7 @@ public class TestWeek5 {
                     String num2 = scanner.next();
 
                     LargerNumber largerNumber = new LargerNumber(num1, num2);
-                    largerNumber.addLarge();
+                System.out.println(largerNumber.addLarge());
 
 
 

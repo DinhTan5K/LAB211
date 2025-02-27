@@ -295,5 +295,15 @@ public class CourseController {
         System.out.println("Updated successfully");
     }
 
+    public String checkEmpty(String message,String regex){
+        String input;
+        while (true) {
+            System.out.print(message);
+            input = scanner.nextLine();
+            if (input.matches(regex)) return input;
+            System.out.println("Data input is invalid");
+        }
+    }
+
 }
 
