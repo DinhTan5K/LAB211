@@ -57,9 +57,21 @@ public class TestWeek5 {
                     System.out.print("Num2: ");
                     String num2 = scanner.next();
 
+                    BigInteger bigInteger = new BigInteger(num1);
+                    BigInteger bigInteger2 = new BigInteger(num2);
+                    bigInteger = bigInteger.multiply(bigInteger2);
+                System.out.println("Check: "+bigInteger);
                     LargerNumber largerNumber = new LargerNumber(num1, num2);
-                System.out.println(largerNumber.addLarge());
+//                System.out.println(largerNumber.addLarge(num1, num2));
+                System.out.println("Result: " + largerNumber.multiLargeNumber());
 
+
+                BigInteger bigIntegerResult = new BigInteger(largerNumber.multiLargeNumber());
+                if (bigInteger.equals(bigIntegerResult)) {
+                    System.out.println("khon");
+                } else {
+                    System.out.println("ngu");
+                }
 
 
             }
