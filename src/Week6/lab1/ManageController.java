@@ -16,10 +16,10 @@ import java.util.Scanner;
 
 public class ManageController {
         private Scanner sc = new Scanner(System.in);
-        private ArrayList salaryHistory = new ArrayList();
         private SQLServerDataSource ds = new SQLServerDataSource();
         private ArrayList<Worker> workers = new ArrayList<>();
         private ArrayList<SalaryHistory> increaseSalaryHistory = new ArrayList<>();
+
     public void addWorker(){
         ds.setTrustServerCertificate(true);
         ds.setUser("sa");
@@ -115,6 +115,8 @@ public class ManageController {
             for (Worker w : workers) {
                 if (w.getIdWorker().equals(id)) {
                     selectedWorker = w;
+                    System.out.println(w);
+                    System.out.println("Salary current: "+w.getSalary());
                     break;
                 }
             }
@@ -182,6 +184,7 @@ public class ManageController {
             for (Worker w : workers) {
                 if (w.getIdWorker().equals(id)) {
                     selectedWorker = w;
+                    System.out.println(w);
                     break;
                 }
             }

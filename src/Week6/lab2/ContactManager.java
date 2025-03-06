@@ -41,7 +41,7 @@ public class ContactManager {
 
     public void displayAll() {
         System.out.println("---------------------------- Display all Contact ----------------------------");
-        System.out.printf("| %-2s | %-20s | %-10s | %-10s | %-10s | %-15s | %-15s |%n", "ID", "Name", "First Name", "Last Name", "Group", "Address", "Phone");
+        System.out.printf("| %-2s | %-20s | %-10s | %-10s | %-10s | %-15s | %-15s |\n", "ID", "Name", "First Name", "Last Name", "Group", "Address", "Phone");
         for (Contact contact : contacts) {
             System.out.println(contact);
         }
