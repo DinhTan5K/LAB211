@@ -6,7 +6,7 @@ class SalaryHistory {
     private String type;
     private String date;
 
-    // Constructor
+
     public SalaryHistory(String workerID, double amount, String type, String date) {
         this.workerID = workerID;
         this.amount = amount;
