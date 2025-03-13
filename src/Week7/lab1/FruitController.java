@@ -52,7 +52,7 @@ public class FruitController {
             for (Fruit f : fruits) {
                 if (choice == f.getFruitId()) {
                     System.out.println("You chose: " + f.getFruitName());
-                    fruit = f;
+                      fruit = f;
                     break;
                 }
             }
